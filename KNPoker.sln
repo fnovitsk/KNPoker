@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNPokerLib", "KNPokerLib\KNPokerLib.csproj", "{A6B03C1A-2B9A-4EA5-BC2D-1CF7E1ACDCCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNPokerTests", "KNPokerTests\KNPokerTests.csproj", "{8D5CC081-8945-4602-AAF6-A493AF9CDDB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNPoker", "KNPoker\KNPoker.csproj", "{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F12B96B4-5711-4565-9214-2AF6FE178B3B}"
+	ProjectSection(SolutionItems) = preProject
+		test.runsettings = test.runsettings
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A6B03C1A-2B9A-4EA5-BC2D-1CF7E1ACDCCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6B03C1A-2B9A-4EA5-BC2D-1CF7E1ACDCCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6B03C1A-2B9A-4EA5-BC2D-1CF7E1ACDCCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6B03C1A-2B9A-4EA5-BC2D-1CF7E1ACDCCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D5CC081-8945-4602-AAF6-A493AF9CDDB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D5CC081-8945-4602-AAF6-A493AF9CDDB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D5CC081-8945-4602-AAF6-A493AF9CDDB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D5CC081-8945-4602-AAF6-A493AF9CDDB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
