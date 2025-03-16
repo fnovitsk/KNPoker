@@ -2,59 +2,42 @@
 
 namespace KNPokerLib;
 
-public enum CardRank
+public static class CardTypeExtensions
 {
-    Deuce = 0,
-    Three = 1,
-    Four = 2,
-    Five = 3,
-    Six = 4,
-    Seven = 5,
-    Eight = 6,
-    Nine = 7,
-    Ten = 8,
-    Jack = 9,
-    Queen = 10,
-    King = 11,
-    Ace = 12
-}
-
-public static class CardRankExtensions
-{
-    public static char ToChar(this CardRank rank) =>
+    public static char ToChar(this CardType rank) =>
         rank switch
         {
-            CardRank.Ace => 'A',
-            CardRank.King => 'K',
-            CardRank.Queen => 'Q',
-            CardRank.Jack => 'J',
-            CardRank.Ten => 'T',
-            CardRank.Nine => '9',
-            CardRank.Eight => '8',
-            CardRank.Seven => '7',
-            CardRank.Six => '6',
-            CardRank.Five => '5',
-            CardRank.Four => '4',
-            CardRank.Three => '3',
-            CardRank.Deuce => '2',
+            CardType.Ace => 'A',
+            CardType.King => 'K',
+            CardType.Queen => 'Q',
+            CardType.Jack => 'J',
+            CardType.Ten => 'T',
+            CardType.Nine => '9',
+            CardType.Eight => '8',
+            CardType.Seven => '7',
+            CardType.Six => '6',
+            CardType.Five => '5',
+            CardType.Four => '4',
+            CardType.Three => '3',
+            CardType.Deuce => '2',
             _ => throw new FormatException("Invalid card type")
         };
-    public static CardRank ToCardRank(this char c) =>
+    public static CardType ToCardType(this char c) =>
         c switch
         {
-            'A' => CardRank.Ace,
-            'K' => CardRank.King,
-            'Q' => CardRank.Queen,
-            'J' => CardRank.Jack,
-            'T' => CardRank.Ten,
-            '9' => CardRank.Nine,
-            '8' => CardRank.Eight,
-            '7' => CardRank.Seven,
-            '6' => CardRank.Six,
-            '5' => CardRank.Five,
-            '4' => CardRank.Four,
-            '3' => CardRank.Three,
-            '2' => CardRank.Deuce,
+            'A' => CardType.Ace,
+            'K' => CardType.King,
+            'Q' => CardType.Queen,
+            'J' => CardType.Jack,
+            'T' => CardType.Ten,
+            '9' => CardType.Nine,
+            '8' => CardType.Eight,
+            '7' => CardType.Seven,
+            '6' => CardType.Six,
+            '5' => CardType.Five,
+            '4' => CardType.Four,
+            '3' => CardType.Three,
+            '2' => CardType.Deuce,
             _ => throw new FormatException("Invalid card type")
         };
 }

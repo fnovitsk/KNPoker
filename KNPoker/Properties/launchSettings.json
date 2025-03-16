@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "KNPoker": {
+      "commandName": "Project",
+      "commandLineArgs": "gencombos KAs QJo"
+    },
+    "Equity": {
+      "commandName": "Project",
+      "commandLineArgs": "equity AKs QJo"
+    }
+  }
+}

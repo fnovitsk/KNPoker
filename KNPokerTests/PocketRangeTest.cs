@@ -1,4 +1,5 @@
 ﻿using CsCheck;
+using HoldemPoker.Cards;
 using KNPokerLib;
 using Microsoft.VisualBasic;
 using Shouldly;
@@ -15,7 +16,7 @@ public sealed class PocketRangeTest
             r => r.Pairs.Count.ShouldBe(5),
             r => r.Suited.Count.ShouldBe(2),
             r => r.Offsuited.Count.ShouldBe(1),
-            r => r.Pairs.ShouldContain(CardRank.Ace)
+            r => r.Pairs.ShouldContain(CardType.Ace)
             );
     }
 
@@ -28,19 +29,28 @@ public sealed class PocketRangeTest
         Should.Throw<InvalidDataException>(() => PocketRange.Parse("AKs-A2o,kk")).Message.ShouldBe("Invalid range: AKs-A2o");
     }
 
+    [TestMethod]
+    public void TestToRowHand()
+    {
+        PocketRange.Parse("AKs").ToRawHands().Count().ShouldBe(4);
+        PocketRange.Parse("KK").ToRawHands().Count().ShouldBe(12);
+        PocketRange.Parse("JTo").ToRawHands().Count().ShouldBe(12);
+
+    }
+
     private static Gen<string> MakeGen()
     {
-        var cardRankGet = Gen.Enum<CardRank>();
+        var CardTypeGet = Gen.Enum<CardType>();
         var suitgen = Gen.OneOfConst(new[] { 's', 'o' });
-        var goodhandgen = cardRankGet
-            .Select(cardRankGet)
-            .Select((CardRank rank1, CardRank rank2) =>
+        var goodhandgen = CardTypeGet
+            .Select(CardTypeGet)
+            .Select((CardType rank1, CardType rank2) =>
             {
                 if (rank1 < rank2)
                     return (rank2, rank1);
                 return (rank1, rank2);
             })
-            .SelectMany(((CardRank rank1, CardRank rank2) ranks) =>
+            .SelectMany(((CardType rank1, CardType rank2) ranks) =>
             {
                 if (ranks.rank1 == ranks.rank2)
                     return Gen.Const($"{ranks.rank1.ToChar()}{ranks.rank2.ToChar()}");

@@ -1,10 +1,5 @@
 ﻿using Spectre.Console.Rendering;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using KNPokerLib;
 using HoldemPoker.Cards;
 
@@ -14,7 +9,7 @@ internal class SpectreUtils
 {
     internal static Table PocketRangeToTable(PocketRange range)
     {
-        CardRank[] ranks = Enum.GetValues<CardRank>();
+        CardType[] ranks = Enum.GetValues<CardType>();
         var table = new Table()
         {
             ShowHeaders = false
@@ -25,10 +20,10 @@ internal class SpectreUtils
             table.AddColumn(new TableColumn("").Centered());
 
         // Fill the table with poker hands
-        for (CardRank row = CardRank.Ace; row >= CardRank.Deuce; row--)
+        for (CardType row = CardType.Ace; row >= CardType.Deuce; row--)
         {
             List<IRenderable> rowCells = [];
-            for (CardRank col = CardRank.Ace; col >= CardRank.Deuce; col--)
+            for (CardType col = CardType.Ace; col >= CardType.Deuce; col--)
             {
                 if (row == col)
                 {
