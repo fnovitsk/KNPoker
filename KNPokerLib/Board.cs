@@ -9,9 +9,9 @@ public record Board
     public Board(Card[]? flop = null, Card? turn = null, Card? river = null)
     {
         if (river is not null && (turn is null || flop is null))
-            throw new InvalidOperationException("Invalid board definition");
+            throw new ArgumentException("Invalid board definition");
         if (turn is not null && flop is null)
-            throw new InvalidOperationException("Invalid board definition");
+            throw new ArgumentException("Invalid board definition");
         Flop = flop;
         Turn = turn;
         River = river;

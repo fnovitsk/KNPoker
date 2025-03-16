@@ -20,9 +20,10 @@ public class EquityCommand : Command<EquityCommand.Settings>
         var range1 = PocketRange.Parse(settings.FirstRange);
         var range2 = PocketRange.Parse(settings.SecondRange);
         var combos = PocketRange.GenCombos(range1, range2);
+        combos = PocketRange.ShrinkCombos(combos);
         foreach (var combo in combos)
         {
-            var boards = Board.EnumerateBoards([combo.hand1.Item1, combo.hand1.Item2, combo.hand2.Item1, combo.hand2.Item2]);
+            var boards = Board.EnumerateBoards(combo.hand1.GetAllCards().Concat(combo.hand2.GetAllCards()));
             int hand1winner = 0, hand2winner = 0, ties = 0;
             foreach (var board in boards)
             {
@@ -35,8 +36,8 @@ public class EquityCommand : Command<EquityCommand.Settings>
                     ties += 1;
             }
             int sum = hand1winner + hand2winner + ties;
-            Console.WriteLine($"{combo.hand1.ToShortString()}({(double) hand1winner / sum:0.000})" + " vs " +
-                $"{combo.hand2.ToShortString()}({(double) hand2winner / sum:0.000})" +
+            Console.WriteLine($"{combo.hand1}({(double) hand1winner / sum:0.000})" + " vs " +
+                $"{combo.hand2}({(double) hand2winner / sum:0.000})" +
                 $", {(double)ties / sum:0.000}");
         }
         return 0;

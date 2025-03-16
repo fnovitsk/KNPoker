@@ -14,46 +14,30 @@ public record PocketRange(
     static private string SingleHandPattern = $@"^({HandPattern})$";
     static private string HandRangePattern = $@"^({HandPattern})-({HandPattern})$";
 
-    public IEnumerable<(Card, Card)> ToRawHands()
+    public IEnumerable<HoldemHand> ToRawHands()
     {
         foreach (var rank1 in Pairs)
             foreach (var suits in Enum.GetValues<CardColor>().Subsets(2))
                 foreach (var suit in suits.Permutations())
-                    yield return (new Card(rank1, suit[0]), new Card(rank1, suit[1]));
+                    yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank1, suit[1]));
         foreach (var (rank1, rank2) in Suited)
             foreach (var suit in Enum.GetValues<CardColor>().Subsets(1))
-                yield return (new Card(rank1, suit[0]), new Card(rank2, suit[0]));
+                yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank2, suit[0]));
         foreach (var (rank1, rank2) in Offsuited)
             foreach (var suits in Enum.GetValues<CardColor>().Subsets(2))
                 foreach (var suit in suits.Permutations())
-                    yield return (new Card(rank1, suit[0]), new Card(rank2, suit[1]));
+                    yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank2, suit[1]));
     }
 
-    public static IEnumerable<((Card, Card) hand1, (Card, Card) hand2)> GenCombos(PocketRange range1, PocketRange range2)
+    public static IEnumerable<(HoldemHand hand1, HoldemHand hand2)> GenCombos(PocketRange range1, PocketRange range2)
     {
         foreach (var h1 in range1.ToRawHands())
             foreach (var h2 in range2.ToRawHands())
             {
-                if ((new HashSet<Card> { h1.Item1, h1.Item2, h2.Item1, h2.Item2 }).Count != 4)
+                if ((new HashSet<Card>(h1.GetAllCards().Concat(h2.GetAllCards())).Count != 4))
                     continue;
                 yield return (h1, h2);
             }
-    }
-
-    private static CardColor[] UnifiedSuits = [CardColor.Club, CardColor.Diamond, CardColor.Heart, CardColor.Spade];
-
-    private static IEnumerable<Card> UnifyCombos(IEnumerable<Card> combos)
-    {
-        var suitMap = new Dictionary<CardColor, int>();
-        int nextColor = 0;
-        foreach (var card in combos) {
-            if (!suitMap.TryGetValue(card.Color, out var index))
-            {
-                index = nextColor++;
-                suitMap[card.Color] = index;
-            }
-            yield return new Card(card.Type, UnifiedSuits[index]);
-        }
     }
 
     public static PocketRange Parse(string v)
@@ -133,27 +117,49 @@ public record PocketRange(
         return new PocketRange(pairs, suited, offsuited);
     }
 
-    private static bool TryParseNonPair(string hand, out CardType rank1, out CardType rank2, out bool suited)
+    private static bool TryParseNonPair(string str, out CardType rank1, out CardType rank2, out bool suited)
     {
         rank1 = CardType.Ace;
         rank2 = CardType.Ace;
         suited = false;
-        if (hand.Length != 3 || (hand[2] != 'o' && hand[2] != 's'))
+        if (str.Length != 3 || (str[2] != 'o' && str[2] != 's'))
             return false;
-        rank1 = hand[0].ToCardType();
-        rank2 = hand[1].ToCardType();
+        rank1 = str[0].ToCardType();
+        rank2 = str[1].ToCardType();
         if (rank1 < rank2)
             (rank1, rank2) = (rank2, rank1);
-        suited = hand[2] == 's';
+        suited = str[2] == 's';
         return true;
     }
 
-    private static bool TryParsePair(string hand, out CardType rank)
+    private static bool TryParsePair(string str, out CardType rank)
     {
         rank = CardType.Ace;
-        if (hand.Length != 2 || hand[0] != hand[1])
+        if (str.Length != 2 || str[0] != str[1])
             return false;
-        rank = hand[0].ToCardType();
+        rank = str[0].ToCardType();
         return true;
+    }
+
+    private static CardColor[] UnifiedSuits = [CardColor.Club, CardColor.Diamond, CardColor.Heart, CardColor.Spade];
+
+    private static IEnumerable<Card> UnifyCombos(IEnumerable<Card> combos)
+    {
+        var suitMap = new Dictionary<CardColor, int>();
+        int nextColor = 0;
+        foreach (var card in combos)
+        {
+            if (!suitMap.TryGetValue(card.Color, out var index))
+            {
+                index = nextColor++;
+                suitMap[card.Color] = index;
+            }
+            yield return new Card(card.Type, UnifiedSuits[index]);
+        }
+    }
+
+    public static IEnumerable<(HoldemHand hand1, HoldemHand hand2)> ShrinkCombos(IEnumerable<(HoldemHand hand1, HoldemHand hand2)> combos)
+    {
+        return combos;
     }
 }

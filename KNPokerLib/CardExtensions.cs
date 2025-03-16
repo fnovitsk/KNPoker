@@ -12,5 +12,4 @@ public static class CardExtensions
     }
     public static string ToShortString(this CardColor card) => Char.ToLower(card.ToString()[0]).ToString();
     public static string ToShortString(this Card card) => card.Type.ToShortString() + card.Color.ToShortString();
-    public static string ToShortString(this (Card, Card) hand) => hand.Item1.ToShortString() + hand.Item2.ToShortString();
 }

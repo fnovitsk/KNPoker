@@ -19,13 +19,13 @@ public class GenCombosCommand : Command<GenCombosCommand.Settings>
     {
         var range1 = PocketRange.Parse(settings.FirstRange);
         var range2 = PocketRange.Parse(settings.SecondRange);
-        foreach (var (card1, card2) in range1.ToRawHands())
+        foreach (var hand in range1.ToRawHands())
         {
-            Console.WriteLine($"{card1.ToShortString()} {card2.ToShortString()}");
+            Console.WriteLine($"{hand}");
         }
-        foreach (var (card1, card2) in range2.ToRawHands())
+        foreach (var hand in range2.ToRawHands())
         {
-            Console.WriteLine($"{card1.ToShortString()} {card2.ToShortString()}");
+            Console.WriteLine($"{hand}");
         }
         return 0;
     }
