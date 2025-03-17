@@ -143,7 +143,7 @@ public record PocketRange(
 
     private static CardColor[] UnifiedSuits = [CardColor.Club, CardColor.Diamond, CardColor.Heart, CardColor.Spade];
 
-    private static IEnumerable<Card> UnifyCombos(IEnumerable<Card> combos)
+    private static IEnumerable<Card> UnifyColorsOnCards(IEnumerable<Card> combos)
     {
         var suitMap = new Dictionary<CardColor, int>();
         int nextColor = 0;
@@ -158,8 +158,12 @@ public record PocketRange(
         }
     }
 
-    public static IEnumerable<(HoldemHand hand1, HoldemHand hand2)> ShrinkCombos(IEnumerable<(HoldemHand hand1, HoldemHand hand2)> combos)
+    public static IEnumerable<(HoldemHand hand1, HoldemHand hand2)> UnifyColorsOnCombos(IEnumerable<(HoldemHand hand1, HoldemHand hand2)> combos)
     {
-        return combos;
+        foreach (var (hand1, hand2) in combos)
+        {
+            var unified = UnifyColorsOnCards(hand1.GetAllCards().Concat(hand2.GetAllCards())).ToArray();
+            yield return (new HoldemHand(unified[0], unified[1]), new HoldemHand(unified[2], unified[3]));
+        }
     }
 }
