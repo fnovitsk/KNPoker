@@ -26,20 +26,16 @@ public class EquityCommand : Command<EquityCommand.Settings>
         var range2 = PocketRange.Parse(settings.SecondRange);
         var combos = PocketRange.GenCombos(range1, range2);
         combos = PocketRange.UnifyColorsOnCombos(combos);
-
-        Dictionary<(HoldemHand, HoldemHand), ComboResultCount> results = [];
-        foreach (var combo in combos)
+        foreach (var group in combos.GroupBy(x => (x.hand1, x.hand2)))
         {
             int hand1winner = 0, hand2winner = 0, ties = 0;
-            if (results.TryGetValue((combo.hand1, combo.hand2), out var count))
-            {
-                count.NumOfCombos += 1;
-                continue;
-            }
-            var boards = Board.EnumerateBoards(combo.hand1.GetAllCards().Concat(combo.hand2.GetAllCards()));
+            var numCombos = group.Count();
+            var (hand1, hand2) = group.Key;
+            // put (hand1, hand2) on channel
+            var boards = Board.EnumerateBoards(hand1.GetAllCards().Concat(hand2.GetAllCards()));
             foreach (var board in boards)
             {
-                var ranks = EquityCalculator.CalcRanking([combo.hand1, combo.hand2], board).ToArray();
+                var ranks = EquityCalculator.CalcRanking([hand1, hand2], board).ToArray();
                 if (ranks[0] < ranks[1])
                     hand1winner += 1;
                 else if (ranks[0] > ranks[1])
@@ -47,17 +43,15 @@ public class EquityCommand : Command<EquityCommand.Settings>
                 else
                     ties += 1;
             }
-            results.Add((combo.hand1, combo.hand2), new ComboResultCount(hand1winner, hand2winner, ties) { NumOfCombos = 1 });
-        }
-        
-        foreach (var (k, v) in results)
-        {
-            int sum = v.NumOfCombos * (v.Winner1 + v.Winner2 + v.Tie);
+            int sum = numCombos * (hand1winner + hand2winner + ties);
             Console.WriteLine(
-                $"{k.Item1}({(double)(v.Winner1 * v.NumOfCombos) / sum:0.000})" + " vs " +
-                $"{k.Item2}({(double)(v.Winner2 * v.NumOfCombos) / sum:0.000})" +
-                $", {(double)v.Tie / sum:0.000}");
+                $"{hand1}({(double)(hand1winner * numCombos) / sum:0.000})" + " vs " +
+                $"{hand2}({(double)(hand2winner * numCombos) / sum:0.000})" +
+                $", {(double)(ties * numCombos)/ sum:0.000}" +
+                $", {numCombos}"
+                );
         }
+        //TODO: add range
         return 0;
     }
 }

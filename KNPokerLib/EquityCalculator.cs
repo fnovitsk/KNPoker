@@ -15,7 +15,8 @@ namespace KNPoker
                 fullHand[0] = hand.Card1;
                 fullHand[1] = hand.Card2;
                 Array.Copy(boardCards, 0, fullHand, 2, boardCards.Length);
-                yield return HoldemHandEvaluator.GetHandRanking(fullHand);
+                int ranking = HoldemHandEvaluator.GetHandRanking(fullHand);
+                yield return ranking;
             }
         }
     }
