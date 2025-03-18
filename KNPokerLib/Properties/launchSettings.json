@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "KNPokerLib": {
+      "commandName": "Project"
+    },
+    "Equity": {
+      "commandName": "Project",
+      "commandLineArgs": "equity AA JTs"
+    }
+  }
+}
