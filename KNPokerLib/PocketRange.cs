@@ -1,32 +1,57 @@
 ﻿using HoldemPoker.Cards;
 using MoreLinq;
+using System;
 using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace KNPokerLib;
 
-public record PocketRange(
-        IReadOnlySet<CardType> Pairs,
-        IReadOnlySet<(CardType, CardType)> Suited,
-        IReadOnlySet<(CardType, CardType)> Offsuited)
+public record PocketRange
 {
+    public IReadOnlySet<CardType> Pairs { get; }
+    public IReadOnlySet<(CardType, CardType)> Suited { get; }
+    public IReadOnlySet<(CardType, CardType)> Offsuited { get; }
+
+    public PocketRange(
+        IReadOnlySet<CardType> pairs,
+        IReadOnlySet<(CardType, CardType)> suited,
+        IReadOnlySet<(CardType, CardType)> offsuited)
+    {
+        if (suited.Any(x => x.Item1 < x.Item2))
+            throw new ArgumentException("Suited must be ordered",
+                nameof(suited) + ": " + suited.Where(x => x.Item1 < x.Item2).First());
+        if (offsuited.Any(x => x.Item1 < x.Item2))
+            throw new ArgumentException("Offsuited must be ordered",
+                nameof(offsuited) + ": " + offsuited.Where(x => x.Item1 < x.Item2).First());
+        Pairs = pairs;
+        Suited = suited;
+        Offsuited = offsuited;
+    }
+
     static private string HandPattern = @"[AKQJT98765432]{2}[os]?";
     static private string SingleHandPattern = $@"^({HandPattern})$";
     static private string HandRangePattern = $@"^({HandPattern})-({HandPattern})$";
+
+    public static Lazy<PocketRange> All = new Lazy<PocketRange>(
+        () => new PocketRange(
+            Enum.GetValues<CardType>().ToHashSet(),
+            Enum.GetValues<CardType>().Subsets(2).Select(x => x[0] > x[1] ? (x[0], x[1]) : (x[1], x[0])).ToHashSet(),
+            Enum.GetValues<CardType>().Subsets(2).Select(x => x[0] > x[1] ? (x[0], x[1]) : (x[1], x[0])).ToHashSet()));
 
     public IEnumerable<HoldemHand> ToRawHands()
     {
         foreach (var rank1 in Pairs)
             foreach (var suits in Enum.GetValues<CardColor>().Subsets(2))
-                foreach (var suit in suits.Permutations())
-                    yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank1, suit[1]));
+                yield return new HoldemHand(new Card(rank1, suits[0]), new Card(rank1, suits[1]));
         foreach (var (rank1, rank2) in Suited)
             foreach (var suit in Enum.GetValues<CardColor>().Subsets(1))
                 yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank2, suit[0]));
         foreach (var (rank1, rank2) in Offsuited)
             foreach (var suits in Enum.GetValues<CardColor>().Subsets(2))
-                foreach (var suit in suits.Permutations())
-                    yield return new HoldemHand(new Card(rank1, suit[0]), new Card(rank2, suit[1]));
+            {
+                yield return new HoldemHand(new Card(rank1, suits[0]), new Card(rank2, suits[1]));
+                yield return new HoldemHand(new Card(rank1, suits[1]), new Card(rank2, suits[0]));
+            }
     }
 
     public static IEnumerable<(HoldemHand hand1, HoldemHand hand2)> GenCombos(PocketRange range1, PocketRange range2)
@@ -142,6 +167,7 @@ public record PocketRange(
     }
 
     private static CardColor[] UnifiedSuits = [CardColor.Club, CardColor.Diamond, CardColor.Heart, CardColor.Spade];
+    
 
     private static IEnumerable<Card> UnifyColorsOnCards(IEnumerable<Card> combos)
     {
