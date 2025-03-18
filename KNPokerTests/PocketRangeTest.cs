@@ -30,11 +30,12 @@ public sealed class PocketRangeTest
     }
 
     [TestMethod]
-    public void TestToRowHand()
+    public void TestToRawHands()
     {
         PocketRange.Parse("AKs").ToRawHands().Count().ShouldBe(4);
-        PocketRange.Parse("KK").ToRawHands().Count().ShouldBe(12);
+        PocketRange.Parse("KK").ToRawHands().Count().ShouldBe(6);
         PocketRange.Parse("JTo").ToRawHands().Count().ShouldBe(12);
+        PocketRange.All.Value.ToRawHands().Count().ShouldBe(1326); // 52 choose 2
 
     }
 
