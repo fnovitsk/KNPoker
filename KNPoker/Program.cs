@@ -14,6 +14,8 @@ app.Configure(config =>
         .WithDescription("Equity of two hands in poker.");
     config.AddCommand<GenCombosCommand>("gencombos")
         .WithDescription("Generate hand combos.");
+    config.AddCommand<CreateCacheCommand>("createCache")
+        .WithDescription("Create Cache of all possible combos");
 });
 app.Run(args);
 //var range = PocketRange.Parse("AA-TT, KTs-K9s, T9o");

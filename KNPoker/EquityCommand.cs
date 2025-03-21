@@ -23,8 +23,9 @@ public class EquityCommand : AsyncCommand<EquityCommand.Settings>
         public int NumOfCombos { get; set; }
     };
 
-    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+    public async Task<List<string>> GetEquityResults(CommandContext context, Settings settings)
     {
+        var results = new List<string>();
         var range1 = PocketRange.Parse(settings.FirstRange);
         var range2 = PocketRange.Parse(settings.SecondRange);
         var combos = PocketRange.GenCombos(range1, range2);
@@ -61,24 +62,28 @@ public class EquityCommand : AsyncCommand<EquityCommand.Settings>
             var (hand1winner, hand2winner, ties, numCombos, hand1, hand2) = result;
             int sum = numCombos * (hand1winner + hand2winner + ties);
 
-            Console.WriteLine(
-                $"{hand1}({(double)(hand1winner * numCombos) / sum:0.000})" + " vs " +
-                $"{hand2}({(double)(hand2winner * numCombos) / sum:0.000})" +
-                $", {(double)(ties * numCombos) / sum:0.000}" +
-                $", {numCombos}"
-            );
+            var resultString = $"{hand1},{(double)(hand1winner * numCombos) / sum:0.000},{hand2},{(double)(hand2winner * numCombos) / sum:0.000},{(double)(ties * numCombos) / sum:0.000},{numCombos}";
+            results.Add(resultString);
 
             range1Wins += hand1winner * numCombos;
             range2Wins += hand2winner * numCombos;
             totalTies += ties * numCombos;
             totalSum += sum;
         }
-        Console.WriteLine(
-            $"Range 1 Wins:({(double)(range1Wins) / totalSum:0.000})" +
-            $"Range 2 Wins:({(double)(range2Wins) / totalSum:0.000})" +
-            $"Ranges Tie:({(double)(totalTies) / totalSum:0.000})"
-        );
+        results.Add($"Range 1 Wins,{(double)(range1Wins) / totalSum:0.000}");
+        results.Add($"Range 2 Wins,{(double)(range2Wins) / totalSum:0.000}");
+        results.Add($"Ranges Tie,{(double)(totalTies) / totalSum:0.000}");
 
+        return results;
+    }
+
+    public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
+    {
+        var results = await GetEquityResults(context, settings);
+        foreach (var result in results)
+        {
+            Console.WriteLine(result);
+        }
         return 0;
     }
 }

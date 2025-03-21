@@ -6,7 +6,11 @@
     },
     "Equity": {
       "commandName": "Project",
-      "commandLineArgs": "equity 66-AA,A8s-AKs,KTs-KQs,QTs-QJs,ATo-AKo,KQo 22-AA,A2s-AKs,K2s-KQs,Q2s-QJs,J5s-JTs,T6s-T9s,97s-98s,87s,A2o-AKo,K5o-KQo,Q8o-QJo,J8o-JTo,T9o"
+      "commandLineArgs": "equity AA JTs"
+    },
+    "createCache": {
+      "commandName": "Project",
+      "commandLineArgs": "createCache C:\\Users\\fnovi\\source\\repos\\KNPoker\\KNPoker\\Cache\\"
     }
   }
 }
