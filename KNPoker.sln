@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		test.runsettings = test.runsettings
 	EndProjectSection
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "knpokerapi.client", "KNPokerApi\knpokerapi.client\knpokerapi.client.esproj", "{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KNPokerApi.Server", "KNPokerApi\KNPokerApi.Server\KNPokerApi.Server.csproj", "{4895E245-2791-4789-9DE7-881A547A242F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +36,16 @@ Global
 		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EB44BCE-7FCE-4431-B629-4CBB3E7CE23E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72F2419C-A8D4-0A26-AD11-2B398F3FC8F1}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{4895E245-2791-4789-9DE7-881A547A242F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4895E245-2791-4789-9DE7-881A547A242F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4895E245-2791-4789-9DE7-881A547A242F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4895E245-2791-4789-9DE7-881A547A242F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
