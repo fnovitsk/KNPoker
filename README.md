@@ -3,7 +3,6 @@
 A Texas Hold'em poker equity calculator that compares hand ranges to determine win percentages. Built with .NET 9, featuring both a command-line interface and a Blazor web UI.
 
 ![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 ## Features
 
@@ -21,10 +20,10 @@ A Texas Hold'em poker equity calculator that compares hand ranges to determine w
 
 ```
 KNPoker/
-??? KNPoker/           # Command-line application
-??? KNPokerWeb/        # Blazor web application
-??? KNPokerLib/        # Core library with equity calculation logic
-??? KNPokerTests/      # Unit tests
+KNPoker/           # Command-line application
+KNPokerWeb/        # Blazor web application
+KNPokerLib/        # Core library with equity calculation logic
+KNPokerTests/      # Unit tests
 ```
 
 ## Getting Started
