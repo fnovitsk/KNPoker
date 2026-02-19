@@ -4,6 +4,8 @@ A Texas Hold'em poker equity calculator that compares hand ranges to determine w
 
 ![.NET 9](https://img.shields.io/badge/.NET-9.0-512BD4)
 
+![Sample Image](KNPoker/Cache/SampleImage.PNG)
+
 ## Features
 
 - **Range vs Range Equity Calculation** - Compare two poker hand ranges against each other
