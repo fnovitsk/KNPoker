@@ -1,0 +1,265 @@
+@page "/"
+@using KNPokerWeb.Services
+@inject EquityService EquityService
+@rendermode InteractiveServer
+
+<PageTitle>Poker Equity Calculator</PageTitle>
+
+<h1>Poker Range Equity Calculator</h1>
+
+<div class="row mb-4">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Range 1</h5>
+            </div>
+            <div class="card-body">
+                <label for="range1" class="form-label">Enter Range:</label>
+                <input type="text" class="form-control" id="range1" @bind="Range1" 
+                       placeholder="e.g., AA-TT, AKs, KQo" disabled="@IsCalculating" />
+                <small class="text-muted">Examples: AA, KK-TT, AKs-ATs, KQo</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2 d-flex align-items-center justify-content-center">
+        <h2 class="text-muted">vs</h2>
+    </div>
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="mb-0">Range 2</h5>
+            </div>
+            <div class="card-body">
+                <label for="range2" class="form-label">Enter Range:</label>
+                <input type="text" class="form-control" id="range2" @bind="Range2" 
+                       placeholder="e.g., QQ-JJ, AQs" disabled="@IsCalculating" />
+                <small class="text-muted">Examples: AA, KK-TT, AKs-ATs, KQo</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        @if (IsCalculating)
+        {
+            <button class="btn btn-secondary btn-lg" @onclick="CancelCalculation">
+                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                Cancel
+            </button>
+        }
+        else
+        {
+            <button class="btn btn-success btn-lg" @onclick="CalculateEquity" disabled="@(!CanCalculate)">
+                <i class="bi bi-calculator me-2"></i>Calculate Equity
+            </button>
+        }
+    </div>
+</div>
+
+@if (IsCalculating)
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="progress" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                     role="progressbar" 
+                     style="width: @ProgressPercent%;" 
+                     aria-valuenow="@ProgressPercent" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                    @ProgressPercent% (@CompletedCombos / @TotalCombos combos)
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        <strong>Error:</strong> @ErrorMessage
+    </div>
+}
+
+@if (Result != null)
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Results Summary</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="card bg-primary text-white">
+                                <div class="card-body">
+                                    <h3>@((Result.Range1Equity * 100).ToString("F2"))%</h3>
+                                    <p class="mb-0">Range 1 Wins</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-body">
+                                    <h3>@((Result.TieEquity * 100).ToString("F2"))%</h3>
+                                    <p class="mb-0">Tie</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-danger text-white">
+                                <div class="card-body">
+                                    <h3>@((Result.Range2Equity * 100).ToString("F2"))%</h3>
+                                    <p class="mb-0">Range 2 Wins</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Equity Bar -->
+                    <div class="mt-4">
+                        <div class="progress" style="height: 40px;">
+                            <div class="progress-bar bg-primary" role="progressbar" 
+                                 style="width: @(Result.Range1Equity * 100)%">
+                                @if (Result.Range1Equity > 0.1)
+                                {
+                                    <span>@((Result.Range1Equity * 100).ToString("F1"))%</span>
+                                }
+                            </div>
+                            <div class="progress-bar bg-secondary" role="progressbar" 
+                                 style="width: @(Result.TieEquity * 100)%">
+                                @if (Result.TieEquity > 0.05)
+                                {
+                                    <span>@((Result.TieEquity * 100).ToString("F1"))%</span>
+                                }
+                            </div>
+                            <div class="progress-bar bg-danger" role="progressbar" 
+                                 style="width: @(Result.Range2Equity * 100)%">
+                                @if (Result.Range2Equity > 0.1)
+                                {
+                                    <span>@((Result.Range2Equity * 100).ToString("F1"))%</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Detailed Combo Results</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark sticky-top">
+                                <tr>
+                                    <th>Hand 1</th>
+                                    <th>Hand 1 Equity</th>
+                                    <th>Hand 2</th>
+                                    <th>Hand 2 Equity</th>
+                                    <th>Tie</th>
+                                    <th>Combos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var combo in Result.ComboResults)
+                                {
+                                    <tr>
+                                        <td><code>@combo.Hand1</code></td>
+                                        <td>
+                                            <span class="badge @(combo.Hand1Equity > combo.Hand2Equity ? "bg-success" : "bg-secondary")">
+                                                @((combo.Hand1Equity * 100).ToString("F1"))%
+                                            </span>
+                                        </td>
+                                        <td><code>@combo.Hand2</code></td>
+                                        <td>
+                                            <span class="badge @(combo.Hand2Equity > combo.Hand1Equity ? "bg-success" : "bg-secondary")">
+                                                @((combo.Hand2Equity * 100).ToString("F1"))%
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info">@((combo.TieEquity * 100).ToString("F1"))%</span>
+                                        </td>
+                                        <td>@combo.NumCombos</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private string Range1 { get; set; } = "AA-KK";
+    private string Range2 { get; set; } = "QQ-JJ";
+    private bool IsCalculating { get; set; }
+    private string? ErrorMessage { get; set; }
+    private EquityService.RangeEquitySummary? Result { get; set; }
+    private CancellationTokenSource? _cancellationTokenSource;
+    
+    private int CompletedCombos { get; set; }
+    private int TotalCombos { get; set; }
+    private int ProgressPercent => TotalCombos > 0 ? (int)((double)CompletedCombos / TotalCombos * 100) : 0;
+
+    private bool CanCalculate => !string.IsNullOrWhiteSpace(Range1) && !string.IsNullOrWhiteSpace(Range2);
+
+    private async Task CalculateEquity()
+    {
+        ErrorMessage = null;
+        Result = null;
+        IsCalculating = true;
+        CompletedCombos = 0;
+        TotalCombos = 0;
+
+        _cancellationTokenSource = new CancellationTokenSource();
+
+        try
+        {
+            var progress = new Progress<(int completed, int total)>(p =>
+            {
+                CompletedCombos = p.completed;
+                TotalCombos = p.total;
+                InvokeAsync(StateHasChanged);
+            });
+
+            Result = await EquityService.CalculateEquityAsync(
+                Range1, 
+                Range2, 
+                progress, 
+                _cancellationTokenSource.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            ErrorMessage = "Calculation was cancelled.";
+        }
+        catch (InvalidDataException ex)
+        {
+            ErrorMessage = $"Invalid range format: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            IsCalculating = false;
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    private void CancelCalculation()
+    {
+        _cancellationTokenSource?.Cancel();
+    }
+}
