@@ -138,7 +138,7 @@ Ranges Tie,0.006
 ## Technical Details
 
 - **Equity Calculation**: Uses full enumeration of all possible 5-card boards (1,712,304 combinations per hand matchup)
-- **Suit Isomorphism**: Reduces computation by unifying equivalent suit patterns
+- **Suit Isomorphism**: Reduces computation by unifying equivalent suit patterns (12:1 combos reduced to a single computation at best)
 - **Parallel Processing**: Utilizes multiple CPU cores for faster calculations
 - **Hand Evaluation**: Uses the HoldemPoker.Evaluator library for hand ranking
 
